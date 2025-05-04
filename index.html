@@ -47,10 +47,10 @@
       .then((res) => res.json())
       .then((locations) => {
         locations.forEach((loc) => {
-          const icon = L.divIcon({
-            html: `<div class="marker"><img src="${loc.thumb}" alt="${loc.name}" title="${loc.name}" /></div>`,
-            className: "custom-marker",
-            iconSize: [50, 50]
+          L.marker([loc.lat, loc.lng])
+            .addTo(map)
+            .bindPopup(`<b>${loc.name}</b><br><a href="${loc.url}">View photos</a>`)
+            .on("click", () => window.location.href = loc.url);
           });
 
           L.marker([loc.lat, loc.lng], { icon })
