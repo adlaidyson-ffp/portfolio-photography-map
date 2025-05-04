@@ -3,21 +3,46 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Photography Map - Adlai Dyson  | Fused Frame Photography</title>
+  <title>Adlai Dyson Photography Map</title>
+
+  <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  
+  <!-- Geocoder CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+
+  <!-- Your custom CSS -->
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div id="map"></div>
 
+  <!-- Leaflet JS -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script>
-    const map = L.map("map").setView([53.47, -1.37], 11);
 
+  <!-- Geocoder JS -->
+  <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+
+  <script>
+    // Initialize map
+    const map = L.map("map").setView([53.47, -1.37], 11); // centered roughly in South Yorkshire
+
+    // Load map tiles
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution: '&copy; OpenStreetMap contributors'
     }).addTo(map);
 
+    // Add search control (geocoder)
+    L.Control.geocoder({
+      defaultMarkGeocode: false
+    })
+    .on("markgeocode", function(e) {
+      const bbox = e.geocode.bbox;
+      map.fitBounds(bbox); // zoom to selected location
+    })
+    .addTo(map);
+
+    // Load location markers
     fetch("locations.json")
       .then((res) => res.json())
       .then((locations) => {
@@ -32,6 +57,9 @@
             .addTo(map)
             .on("click", () => window.location.href = loc.url);
         });
+      })
+      .catch((err) => {
+        console.error("Failed to load locations.json:", err);
       });
   </script>
 </body>
