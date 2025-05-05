@@ -77,7 +77,7 @@
           autoCollapse: true,
           hideMarkerOnCollapse: false
         }).on('search:locationfound', function(e) {
-          // Zooming in after search
+          // Explicitly zoom to the location after a search result
           map.setView(e.latlng, 14);  // Set the zoom and center to the found location
         });
         map.addControl(searchControl);
