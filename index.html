@@ -24,7 +24,8 @@
     const defaultZoom = 11;
     const mapboxAccessToken = "pk.eyJ1IjoiYWR5c29uZmZwIiwiYSI6ImNtYWIyYmx5aTI1dWwyaXNndnMxY2djMzkifQ.76GkXTqg6P-FsnJKiPe-Sg"; // Replace with your actual Mapbox access token
     const locationsFile = "locations.json";
-    const searchZoomLevel = 14;
+    const geocoderZoomLevel = 15; // Zoom level for geocoder results
+    const searchZoomLevel = 14;   // Zoom level for photo location search
 
     // --- Initialize Map and Base Layers ---
     const osmLayer = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -52,8 +53,13 @@
       errorMessage: "Could not find location",
       showResultIcons: true,
       position: "topright",
-      defaultMarkGeocode: true // This option ensures the map zooms to the geocoded result
+      defaultMarkGeocode: true
     }).addTo(map);
+
+    // Add event listener for when a location is geocoded
+    geocoder.on('markgeocode', function(e) {
+      map.setView(e.geocode.center, geocoderZoomLevel); // Set the zoom level here
+    });
 
     // --- Load Locations and Add Markers with Search Functionality ---
     fetch(locationsFile)
