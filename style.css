@@ -1,8 +1,8 @@
-/* Basic reset and full height for the map */
 html, body {
   height: 100%;
   margin: 0;
-  background: #1e374d;
+  padding: 0;
+  width: 100%;
 }
 
 #map {
@@ -10,17 +10,22 @@ html, body {
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
+  height: 100vh;
   background-color: #2b3d47;
   border-radius: 0;
   box-shadow: none;
 }
 
-/* Custom Marker Styling */
-.custom-marker {
-  border-radius: 50%;
-  border: 2px solid white;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+.notification-box {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: #fff;
+  border-top: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;
+  display: none;
 }
 
 /* Popup styling */
@@ -58,13 +63,7 @@ html, body {
   background: #1e374d;
   color: #94fdf8;
   border: 1px solid #1e374d;
-}
-
-.leaflet-search-list {
-  background: #1e374d;
-  color: #94fdf8;
-  max-height: 250px;
-  overflow-y: auto;
+  padding: 10px;
 }
 
 /* Style for Layer Control (switch maps) */
@@ -89,17 +88,4 @@ html, body {
 .leaflet-control-locate:hover {
   background: #1e374d;
   color: #94fdf8;
-}
-
-/* Notification box styling */
-.notification-box {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  background-color: #fff;
-  border-top: 1px solid #ddd;
-  padding: 10px;
-  text-align: center;
-  display: none;
 }
