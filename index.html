@@ -51,7 +51,8 @@
       placeholder: "Search for places",
       errorMessage: "Could not find location",
       showResultIcons: true,
-      position: "topright"
+      position: "topright",
+      defaultMarkGeocode: true // This option ensures the map zooms to the geocoded result
     }).addTo(map);
 
     // --- Load Locations and Add Markers with Search Functionality ---
@@ -91,7 +92,6 @@
       })
       .catch((error) => {
         console.error(`Error loading or processing ${locationsFile}:`, error);
-        // Optionally display an error message on the map
         L.popup({maxWidth: 300})
           .setLatLng([defaultLatitude, defaultLongitude])
           .setContent(`<b>Error loading photo locations.</b> Please check the ${locationsFile} file.`)
@@ -99,7 +99,6 @@
       });
 
     // --- Function to Add Routes (Example - Requires Route Data) ---
-    // You'll need to fetch or define your route data (e.g., GeoJSON)
     function addRouteToMap(routeData) {
       L.geoJSON(routeData, {
         style: {
@@ -107,7 +106,6 @@
           weight: 5,
           opacity: 0.7
         }
-        // You can add more styling options or event listeners here
       }).addTo(map);
     }
 
@@ -121,7 +119,7 @@
     //     console.error("Error loading route data:", error);
     //   });
 
-    // --- Initial Map View (Can be adjusted based on your preference) ---
+    // --- Initial Map View ---
     // You might want to adjust the initial view based on the locations loaded
     // For example, fit the map bounds to the loaded markers:
     // fetch(locationsFile)
