@@ -2,7 +2,7 @@
 html, body, #map {
   height: 100%;
   margin: 0;
-  font-family: 'Segoe UI', sans-serif;
+@ -5,12 +6,14 @@ html, body, #map {
   background: #1e374d;
 }
 
@@ -17,10 +17,7 @@ html, body, #map {
 .leaflet-popup-content-wrapper {
   background: #1e374d;
   color: #94fdf8;
-  border-radius: 8px;
-  border: 1px solid #94fdf8;
-}
-
+@ -21,3 +24,66 @@ html, body, #map {
 .leaflet-popup-tip {
   background: #1e374d;
 }
@@ -86,47 +83,4 @@ html, body, #map {
   background-color: #2b3d47;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-}
-
-/* Notification box styling */
-.notification-box {
-  background-color: #1e374d;
-  color: #94fdf8;
-  border-top: 1px solid #94fdf8;
-  padding: 15px;
-  text-align: center;
-  font-size: 16px;
-  font-weight: bold;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-  animation: fadeInOut 3s;
-}
-
-@keyframes fadeInOut {
-  0% {
-    opacity: 0;
-  }
-  10% {
-    opacity: 1;
-  }
-  90% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-  }
-}
-
-/* Media queries for notification box */
-@media only screen and (max-width: 768px) {
-  .notification-box {
-    font-size: 14px;
-    padding: 10px;
-  }
-}
-
-@media only screen and (max-width: 480px) {
-  .notification-box {
-    font-size: 12px;
-    padding: 5px;
-  }
 }

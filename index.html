@@ -111,6 +111,7 @@
           hideMarkerOnCollapse: false
         }).on('search:locationfound', function(e) {
 <<<<<<< HEAD
+<<<<<<< HEAD
           if (e.latlng) {
             map.flyTo(e.latlng, searchZoomLevel);
           } else if (e.layer && e.layer.getLatLng) {
@@ -120,6 +121,9 @@
           setTimeout(() => {
             document.getElementById('notification-box').style.display = 'none';
           }, 3000);
+=======
+          map.setView(e.latlng, searchZoomLevel);
+>>>>>>> parent of 4fc1c68 (Update index.html)
 =======
           map.setView(e.latlng, searchZoomLevel);
 >>>>>>> parent of 4fc1c68 (Update index.html)
