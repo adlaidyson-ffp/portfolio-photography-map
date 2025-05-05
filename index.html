@@ -21,20 +21,22 @@
 
   <script>
     // Initialize map and base layers
-    const normalLayer = L.tileLayer("https://{s}.tile.stamen.com/toner/{z}/{x}/{y}.png", {
-      attribution: '&copy; OpenStreetMap contributors &copy; Stamen Design'
+    const osmLayer = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: '&copy; OpenStreetMap contributors'
     });
 
-    const satelliteLayer = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
-      attribution: '&copy; Esri, Maxar, Earthstar Geographics'
+    const satelliteLayer = L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/satellite-v9/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiYWR5c29uZmZwIiwiYSI6ImNtYWIyYmx5aTI1dWwyaXNndnMxY2djMzkifQ.76GkXTqg6P-FsnJKiPe-Sg", {
+      attribution: '&copy; <a href="https://www.mapbox.com/about/maps/">Mapbox</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+      tileSize: 512,
+      zoomOffset: -1
     });
 
     // Initialize map with default view
-    const map = L.map("map", { layers: [normalLayer] }).setView([53.47, -1.37], 11);
+    const map = L.map("map", { layers: [osmLayer] }).setView([53.47, -1.37], 11);
 
     // Add Layer Control for Switching Between Layers
     const baseMaps = {
-      "Normal": normalLayer,
+      "Normal": osmLayer,
       "Satellite": satelliteLayer
     };
     L.control.layers(baseMaps).addTo(map);
@@ -69,7 +71,12 @@
           propertyName: "locName",
           zoom: 14,
           initial: false,
-          marker: false
+          marker: false,
+          textErr: 'Location not found!',
+          autoCollapse: true,
+          hideMarkerOnCollapse: false
+        }).on('search:locationfound', function(e) {
+          map.fitBounds(e.latlng.bounds);
         });
         map.addControl(searchControl);
       })
