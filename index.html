@@ -2,13 +2,15 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Adlai Dyson Photo Map</title>
 
   <!-- Leaflet CSS -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css"/>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-search@2.9.7/dist/leaflet-search.min.css"/>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.locatecontrol/dist/L.Control.Locate.min.css"/>
+  <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
   <div id="map"></div>
@@ -16,17 +18,21 @@
   <!-- Leaflet JS -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+  <script src="https://unpkg.com/leaflet-search@2.9.7/dist/leaflet-search.min.js"></script>
+  <script src="https://unpkg.com/leaflet.locatecontrol/dist/L.Control.Locate.min.js"></script>
 
   <script>
     // Initialize map
-    const map = L.map("map").setView([53.47, -1.37], 11); // General South Yorkshire view
+    const map = L.map("map").setView([53.47, -1.37], 11);
 
-    // Add tile layer
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      attribution: '&copy; OpenStreetMap contributors'
+    // Add better looking tile layer (CartoDB Positron)
+    L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
+      attribution: '&copy; OpenStreetMap &copy; CartoDB',
+      subdomains: 'abcd',
+      maxZoom: 19
     }).addTo(map);
 
-    // Add search control
+    // Add geocoder control (optional for address lookups)
     L.Control.geocoder({
       defaultMarkGeocode: false
     })
@@ -35,15 +41,45 @@
     })
     .addTo(map);
 
+    // Add locate control (find user's location)
+    L.control.locate().addTo(map);
+
+    // Marker group
+    const markers = new L.LayerGroup();
+
     // Load locations from JSON
     fetch("locations.json")
       .then((res) => res.json())
       .then((locations) => {
         locations.forEach((loc) => {
-          L.marker([loc.lat, loc.lng])
-            .addTo(map)
+          // Optional: use a thumbnail if available
+          const icon = loc.thumbnail
+            ? L.icon({
+                iconUrl: loc.thumbnail,
+                iconSize: [40, 40],
+                className: "custom-marker"
+              })
+            : undefined;
+
+          const marker = L.marker([loc.lat, loc.lng], icon ? { icon } : {})
             .bindPopup(`<b>${loc.name}</b><br><a href="${loc.url}" target="_blank">View photos</a>`);
+
+          marker.locName = loc.name; // for Leaflet Search
+          markers.addLayer(marker);
         });
+
+        map.addLayer(markers);
+
+        // Add search control for your markers
+        const searchControl = new L.Control.Search({
+          layer: markers,
+          propertyName: "locName",
+          zoom: 14,
+          initial: false,
+          marker: false
+        });
+
+        map.addControl(searchControl);
       })
       .catch((err) => {
         console.error("Error loading locations.json:", err);
