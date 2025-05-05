@@ -9,32 +9,30 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet-search@2.9.7/dist/leaflet-search.min.css"/>
   <link rel="stylesheet" href="style.css" />
-
 </head>
 <body>
   <div id="map"></div>
-  <div class="notification-box" id="notification-box">Select the pin to view photos and more information.</div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
   <script src="https://unpkg.com/leaflet-search@2.9.7/dist/leaflet-search.min.js"></script>
 
   <script>
-    // Configuration
+    // --- Configuration ---
     const defaultLatitude = 53.47;
     const defaultLongitude = -1.37;
     const defaultZoom = 11;
-    const mapboxAccessToken = "pk.eyJ1IjoiYWR5c29uZmZwIiwiYSI6ImNtYWIyYmx5aTI1dWwyaXNndnMxY2djMzkifQ.76GkXTqg6P-FsnJKiPe-Sg"; // Replace with your actual Mapbox access token
+    const mapboxAccessToken = "YOUR_MAPBOX_ACCESS_TOKEN"; // Replace with your actual Mapbox access token
     const locationsFile = "locations.json";
     const geocoderZoomLevel = 15; // Zoom level for geocoder results
     const searchZoomLevel = 14;   // Zoom level for photo location search
 
-    // Initialize Map and Base Layers
+    // --- Initialize Map and Base Layers ---
     const osmLayer = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution: '&copy; OpenStreetMap contributors'
     });
 
-    const satelliteLayer = L.tileLayer(`https://api.mapbox.com/styles/v1/mapbox/satellite-v9/tiles/{z}/{x}/{y}?access_token=${mapboxAccessToken}`, {
+    const satelliteLayer = L.tileLayer(`https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v11/tiles/{z}/{x}/{y}?access_token=${mapboxAccessToken}`, {
       attribution: '&copy; <a href="https://www.mapbox.com/about/maps/">Mapbox</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
       tileSize: 512,
       zoomOffset: -1
@@ -48,7 +46,7 @@
     };
     L.control.layers(baseMaps).addTo(map);
 
-    // Geocoder Control (Place Search with Autocomplete)
+    // --- Geocoder Control (Place Search with Autocomplete) ---
     const geocoder = L.Control.geocoder({
       collapsed: false,
       placeholder: "Search for places",
@@ -58,15 +56,21 @@
       defaultMarkGeocode: true
     }).addTo(map);
 
+    // Add event listener for when a location is geocoded
     geocoder.on('markgeocode', function(e) {
       if (e.geocode && e.geocode.center) {
         map.setView(e.geocode.center, geocoderZoomLevel);
       }
     });
 
-    // Load Locations and Add Markers with Search Functionality
+    // --- Load Locations and Add Markers with Search Functionality ---
     fetch(locationsFile)
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
       .then((locations) => {
         const markers = [];
 
@@ -74,7 +78,6 @@
           const marker = L.marker([loc.lat, loc.lng])
             .bindPopup(`<b>${loc.name}</b><br><a href="${loc.url}" target="_blank">View photos</a>`);
           marker.locName = loc.name; // For the Leaflet Search control
-          marker.addTo(map);
           markers.push(marker);
         });
 
@@ -92,10 +95,6 @@
           hideMarkerOnCollapse: false
         }).on('search:locationfound', function(e) {
           map.setView(e.latlng, searchZoomLevel);
-          document.getElementById('notification-box').style.display = 'block';
-          setTimeout(() => {
-            document.getElementById('notification-box').style.display = 'none';
-          }, 3000);
         });
         map.addControl(searchControl);
       })
@@ -106,6 +105,43 @@
           .setContent(`<b>Error loading photo locations.</b> Please check the ${locationsFile} file.`)
           .openOn(map);
       });
+
+    // --- Function to Add Routes (Example - Requires Route Data) ---
+    function addRouteToMap(routeData) {
+      L.geoJSON(routeData, {
+        style: {
+          color: 'blue',
+          weight: 5,
+          opacity: 0.7
+        }
+      }).addTo(map);
+    }
+
+    // --- Example of Fetching and Adding Route Data (Adapt to your data source) ---
+    // fetch("routes.geojson")
+    //   .then(response => response.json())
+    //   .then(routeData => {
+    //     addRouteToMap(routeData);
+    //   })
+    //   .catch(error => {
+    //     console.error("Error loading route data:", error);
+    //   });
+
+    // --- Initial Map View ---
+    // You might want to adjust the initial view based on the locations loaded
+    // For example, fit the map bounds to the loaded markers:
+    // fetch(locationsFile)
+    //   .then(response => response.json())
+    //   .then(locations => {
+    //     if (locations.length > 0) {
+    //       const bounds = L.latLngBounds(locations.map(loc => [loc.lat, loc.lng]));
+    //       map.fitBounds(bounds, { padding: [50, 50] }); // Add some padding
+    //     }
+    //   })
+    //   .catch(error => {
+    //     console.error("Error getting locations for map bounds:", error);
+    //   });
+
   </script>
 </body>
 </html>

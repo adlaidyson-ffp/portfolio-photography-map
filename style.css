@@ -1,91 +1,93 @@
-html, body {
-  height: 100%;
+/* style.css */
+
+body {
   margin: 0;
   padding: 0;
-  width: 100%;
+  overflow: hidden; /* Prevent scrollbars if map takes full viewport */
 }
 
 #map {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100vh;
-  background-color: #2b3d47;
-  border-radius: 0;
-  box-shadow: none;
+  width: 100vw; /* Take full viewport width */
+  height: 100vh; /* Take full viewport height */
 }
 
-.notification-box {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  background-color: #fff;
-  border-top: 1px solid #ddd;
-  padding: 10px;
-  text-align: center;
-  display: none;
+.leaflet-control-geocoder-form {
+  margin-bottom: 10px; /* Add some space below the search bar */
 }
 
-/* Popup styling */
-.leaflet-popup-content-wrapper {
-  background: #1e374d;
-  color: #94fdf8;
+.leaflet-control-geocoder-results {
+  border: 1px solid #ccc;
+  background-color: white;
+  padding: 5px;
+  margin-top: 5px;
   border-radius: 5px;
-  padding: 10px;
+  box-shadow: 0 1px 5px rgba(0,0,0,0.2);
+  max-height: 200px;
+  overflow-y: auto;
 }
 
-.leaflet-popup-tip {
-  background: #1e374d;
+.leaflet-control-geocoder-result {
+  padding: 5px 0;
+  cursor: pointer;
 }
 
-/* Control styling for search and geocoder */
-.leaflet-control-geocoder input,
-.leaflet-search-input {
-  background: #1e374d;
-  color: #94fdf8;
-  border: 1px solid #94fdf8;
-  padding: 10px;
-  width: 250px;
+.leaflet-control-geocoder-result:hover {
+  background-color: #f0f0f0;
+}
+
+.leaflet-search-bar {
+  border: 1px solid #ccc;
   border-radius: 5px;
+  padding: 5px 8px;
+  font-size: 14px;
 }
 
-.leaflet-search-button {
-  background: #94fdf8;
-  color: #1e374d;
-  border: 1px solid #94fdf8;
+.leaflet-search-tooltip {
+  border: 1px solid #ccc;
+  background-color: white;
+  padding: 5px;
   border-radius: 5px;
-  padding: 5px 10px;
+  box-shadow: 0 1px 5px rgba(0,0,0,0.2);
+  max-height: 150px;
+  overflow-y: auto;
 }
 
-.leaflet-search-button:hover {
-  background: #1e374d;
-  color: #94fdf8;
-  border: 1px solid #1e374d;
-  padding: 10px;
+.leaflet-search-tip {
+  padding: 5px 0;
+  cursor: pointer;
 }
 
-/* Style for Layer Control (switch maps) */
+.leaflet-search-tip:hover {
+  background-color: #f0f0f0;
+}
+
 .leaflet-control-layers {
-  background: rgba(30, 55, 77, 0.8);
+  border: 1px solid #ccc;
+  background-color: white;
   border-radius: 5px;
   padding: 10px;
-  border: 1px solid #94fdf8;
+  box-shadow: 0 1px 5px rgba(0,0,0,0.2);
 }
 
-.leaflet-control-layers label {
-  color: #94fdf8;
+.leaflet-control-layers-list {
+  padding: 5px 0;
 }
 
-/* Locate control styling */
-.leaflet-control-locate {
-  background: #94fdf8;
-  color: #1e374d;
-  border-radius: 50%;
+.leaflet-popup-content-wrapper {
+  border-radius: 5px;
+  background-color: white;
+  padding: 10px;
 }
 
-.leaflet-control-locate:hover {
-  background: #1e374d;
-  color: #94fdf8;
+.leaflet-popup-content {
+  margin: 0;
+}
+
+.leaflet-popup-content a {
+  color: #0078a8;
+  text-decoration: none;
+}
+
+.leaflet-popup-content a:hover {
+  text-decoration: underline;
 }
