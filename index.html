@@ -9,9 +9,24 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet-search@2.9.7/dist/leaflet-search.min.css"/>
   <link rel="stylesheet" href="style.css" />
+
+  <style>
+    .notification-box {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background-color: #fff;
+      border-top: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
+      display: none;
+    }
+  </style>
 </head>
 <body>
   <div id="map"></div>
+  <div class="notification-box" id="notification-box">Select the pin to view photos and more information.</div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
@@ -78,6 +93,7 @@
           const marker = L.marker([loc.lat, loc.lng])
             .bindPopup(`<b>${loc.name}</b><br><a href="${loc.url}" target="_blank">View photos</a>`);
           marker.locName = loc.name; // For the Leaflet Search control
+          marker.addTo(map).bringToFront(); // Bring location markers to the front
           markers.push(marker);
         });
 
@@ -99,6 +115,10 @@
           } else if (e.layer && e.layer.getLatLng) {
             map.flyTo(e.layer.getLatLng(), searchZoomLevel);
           }
+          document.getElementById('notification-box').style.display = 'block';
+          setTimeout(() => {
+            document.getElementById('notification-box').style.display = 'none';
+          }, 3000);
         });
         map.addControl(searchControl);
       })
