@@ -2,15 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Adlai Dyson Photo Map</title>
 
   <!-- Leaflet CSS -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css"/>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet-search@2.9.7/dist/leaflet-search.min.css"/>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet.locatecontrol/dist/L.Control.Locate.min.css"/>
-  <link rel="stylesheet" href="style.css"/>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div id="map"></div>
@@ -19,7 +18,6 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
   <script src="https://unpkg.com/leaflet-search@2.9.7/dist/leaflet-search.min.js"></script>
-  <script src="https://unpkg.com/leaflet.locatecontrol/dist/L.Control.Locate.min.js"></script>
 
   <script>
     // Initialize map and base layers
@@ -31,9 +29,17 @@
       attribution: '&copy; Esri, Maxar, Earthstar Geographics'
     });
 
+    // Initialize map with default view
     const map = L.map("map", { layers: [normalLayer] }).setView([53.47, -1.37], 11);
 
-    // Add geocoder control (better autocomplete)
+    // Add Layer Control for Switching Between Layers
+    const baseMaps = {
+      "Normal": normalLayer,
+      "Satellite": satelliteLayer
+    };
+    L.control.layers(baseMaps).addTo(map);
+
+    // Add Search Control with Autocomplete (for better results)
     const geocoder = L.Control.geocoder({
       collapsed: false,
       placeholder: "Search for places",
@@ -42,43 +48,22 @@
       position: "topright"
     }).addTo(map);
 
-    // Add locate control (find user's location)
-    L.control.locate().addTo(map);
-
-    // Layer control for switching maps
-    const baseMaps = {
-      "Normal": normalLayer,
-      "Satellite": satelliteLayer
-    };
-
-    L.control.layers(baseMaps).addTo(map);
-
-    // Load locations from JSON
-    const markers = new L.LayerGroup();
-
+    // Load locations from JSON and add markers
     fetch("locations.json")
       .then((res) => res.json())
       .then((locations) => {
-        locations.forEach((loc) => {
-          // Use a thumbnail if available
-          const icon = loc.thumbnail
-            ? L.icon({
-                iconUrl: loc.thumbnail,
-                iconSize: [40, 40],
-                className: "custom-marker"
-              })
-            : undefined;
+        const markers = new L.LayerGroup(); // To group all markers
 
-          const marker = L.marker([loc.lat, loc.lng], icon ? { icon } : {})
+        locations.forEach((loc) => {
+          const marker = L.marker([loc.lat, loc.lng])
+            .addTo(markers)
             .bindPopup(`<b>${loc.name}</b><br><a href="${loc.url}" target="_blank">View photos</a>`);
 
-          marker.locName = loc.name; // for Leaflet Search
-          markers.addLayer(marker);
+          marker.locName = loc.name; // for search
         });
 
-        map.addLayer(markers);
-
-        // Add search control for your markers
+        // Add markers to map and search control
+        markers.addTo(map);
         const searchControl = new L.Control.Search({
           layer: markers,
           propertyName: "locName",
@@ -86,7 +71,6 @@
           initial: false,
           marker: false
         });
-
         map.addControl(searchControl);
       })
       .catch((err) => {
