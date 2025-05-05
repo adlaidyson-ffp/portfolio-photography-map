@@ -1,20 +1,20 @@
 [
   {
     "name": "Elsecar Park",
-    "lat": 53.4922414,
-    "lng": -1.4244021,
+    "lat": 53.4906643,
+    "lng": -1.4228522,
     "url": "https://elsecarpark.adlaidyson.co.uk"
   },
  {
     "name": "Wentworth Woodhouse",
-    "lat": 53.4742307,
-    "lng": -1.404912,
+    "lat": 53.4741584,
+    "lng": -1.4044050,
     "url": "https://wwpt.adlaidyson.co.uk"
   },
   {
     "name": "Rotherham Minster",
-    "lat": 53.4309912,
-    "lng": -1.3566821,
+    "lat": 53.4308089,
+    "lng": -1.3565507,
     "url": "https://rotherhamminster.adlaidyson.co.uk"
   }
 ]
