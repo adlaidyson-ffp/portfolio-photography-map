@@ -22,37 +22,45 @@
   <script src="https://unpkg.com/leaflet.locatecontrol/dist/L.Control.Locate.min.js"></script>
 
   <script>
-    // Initialize map
-    const map = L.map("map").setView([53.47, -1.37], 11);
+    // Initialize map and base layers
+    const normalLayer = L.tileLayer("https://{s}.tile.stamen.com/toner/{z}/{x}/{y}.png", {
+      attribution: '&copy; OpenStreetMap contributors &copy; Stamen Design'
+    });
 
-    // Add better looking tile layer (CartoDB Positron)
-    L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
-      attribution: '&copy; OpenStreetMap &copy; CartoDB',
-      subdomains: 'abcd',
-      maxZoom: 19
+    const satelliteLayer = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
+      attribution: '&copy; Esri, Maxar, Earthstar Geographics'
+    });
+
+    const map = L.map("map", { layers: [normalLayer] }).setView([53.47, -1.37], 11);
+
+    // Add geocoder control (better autocomplete)
+    const geocoder = L.Control.geocoder({
+      collapsed: false,
+      placeholder: "Search for places",
+      errorMessage: "Could not find location",
+      showResultIcons: true,
+      position: "topright"
     }).addTo(map);
-
-    // Add geocoder control (optional for address lookups)
-    L.Control.geocoder({
-      defaultMarkGeocode: false
-    })
-    .on("markgeocode", function(e) {
-      map.fitBounds(e.geocode.bbox);
-    })
-    .addTo(map);
 
     // Add locate control (find user's location)
     L.control.locate().addTo(map);
 
-    // Marker group
-    const markers = new L.LayerGroup();
+    // Layer control for switching maps
+    const baseMaps = {
+      "Normal": normalLayer,
+      "Satellite": satelliteLayer
+    };
+
+    L.control.layers(baseMaps).addTo(map);
 
     // Load locations from JSON
+    const markers = new L.LayerGroup();
+
     fetch("locations.json")
       .then((res) => res.json())
       .then((locations) => {
         locations.forEach((loc) => {
-          // Optional: use a thumbnail if available
+          // Use a thumbnail if available
           const icon = loc.thumbnail
             ? L.icon({
                 iconUrl: loc.thumbnail,
