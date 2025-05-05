@@ -24,7 +24,7 @@
     const defaultZoom = 11;
     const mapboxAccessToken = "pk.eyJ1IjoiYWR5c29uZmZwIiwiYSI6ImNtYWIyYmx5aTI1dWwyaXNndnMxY2djMzkifQ.76GkXTqg6P-FsnJKiPe-Sg"; // Replace with your actual Mapbox access token
     const locationsFile = "locations.json";
-    const geocoderZoomLevel = 15; // Desired zoom level (may not be directly applied now)
+    const geocoderZoomLevel = 15; // Zoom level for geocoder results
     const searchZoomLevel = 14;   // Zoom level for photo location search
 
     // --- Initialize Map and Base Layers ---
@@ -58,10 +58,8 @@
 
     // Add event listener for when a location is geocoded
     geocoder.on('markgeocode', function(e) {
-      if (e.geocode && e.geocode.bbox) {
-        map.fitBounds(e.geocode.bbox, { maxZoom: geocoderZoomLevel });
-      } else {
-        map.setView(e.geocode.center, geocoderZoomLevel); // Fallback if no bbox
+      if (e.geocode && e.geocode.center) {
+        map.setView(e.geocode.center, geocoderZoomLevel);
       }
     });
 
