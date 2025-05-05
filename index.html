@@ -94,7 +94,11 @@
           autoCollapse: true,
           hideMarkerOnCollapse: false
         }).on('search:locationfound', function(e) {
-          map.setView(e.latlng, searchZoomLevel);
+          if (e.latlng) {
+            map.flyTo(e.latlng, searchZoomLevel);
+          } else if (e.layer && e.layer.getLatLng) {
+            map.flyTo(e.layer.getLatLng(), searchZoomLevel);
+          }
         });
         map.addControl(searchControl);
       })
@@ -141,7 +145,6 @@
     //   .catch(error => {
     //     console.error("Error getting locations for map bounds:", error);
     //   });
-
   </script>
 </body>
 </html>
