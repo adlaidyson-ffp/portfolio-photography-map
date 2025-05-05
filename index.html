@@ -42,8 +42,7 @@
         locations.forEach((loc) => {
           L.marker([loc.lat, loc.lng])
             .addTo(map)
-            .bindPopup(`<b>${loc.name}</b><br><a href="${loc.url}">View photos</a>`)
-            .on("click", () => window.location.href = loc.url);
+            .bindPopup(`<b>${loc.name}</b><br><a href="${loc.url}" target="_blank">View photos</a>`);
         });
       })
       .catch((err) => {
